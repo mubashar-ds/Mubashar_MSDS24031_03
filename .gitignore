@@ -1,7 +1,6 @@
 Dataset/
 Saved_Models/
 Embeddings/
-Graphs/
 
 __pycache__/
-*.pyc
+*.pycgit
