@@ -32,7 +32,6 @@ class MyContrastiveDataset(Dataset):
             
         # positive pair ...
         else:
-            # positive pair ...
             index_2 = index
             while index_2 == index:
                 index_2 = random.choice(self.class_to_indexes[label_1])
@@ -43,6 +42,39 @@ class MyContrastiveDataset(Dataset):
 
     def __len__(self):
         return len(self.dataset)
+    
+class MyTripletDataset(Dataset):
+    def __init__(self, root_directory, transform = None):
+        self.dataset = datasets.ImageFolder(root = root_directory, transform = transform)
+        self.transform = transform
+
+        # maping classes to indexes...
+        self.class_to_indexes = {}
+        for indx, (_, label) in enumerate(self.dataset.samples):
+            if label not in self.class_to_indexes:
+                self.class_to_indexes[label] = []
+            self.class_to_indexes[label].append(indx)
+
+        self.classes = list(self.class_to_indexes.keys())
+
+    def __getitem__(self, index):
+        anchor, label_anchor = self.dataset[index]
+
+        # negative... differnet classs..
+        negative_label = label_anchor
+        while negative_label == label_anchor:
+            negative_label = random.choice(self.classes)
+
+        negative_index = random.choice(self.class_to_indexes[negative_label])
+        negative, _ = self.dataset[negative_index]
+
+         # positive.. same class and different image...
+        positive_index = index
+        while positive_index == index:
+            positive_index = random.choice(self.class_to_indexes[label_anchor])
+        positive, _ = self.dataset[positive_index]
+
+        return anchor, negative, positive
 
 # if __name__ == '__main__':
 #     from torchvision import transforms
@@ -51,8 +83,17 @@ class MyContrastiveDataset(Dataset):
 #     data_path = './Dataset/caltech-101'
 
 #     print('testinig my contrastive dataset ...')
+
 #     contrastive = MyContrastiveDataset(data_path, transform)
 #     image_1, image_2, label = contrastive[5]
 #     print('label : ', label)
 #     print('image_1 shape : ', image_1.shape)
 #     print('image_2 shape : ', image_2.shape)
+
+#     print('\ntesting my triplet dataset...')
+
+#     triplet = MyTripletDataset(data_path, transform)
+#     anchor, negative, positive = triplet[2]
+#     print('anchor shape : ', anchor.shape)
+#     print('negative shape : ', negative.shape)
+#     print('positive shape : ', positive.shape)
