@@ -16,6 +16,21 @@ class MyContrastiveLoss(nn.Module):
 
         return loss.mean()
     
+class MyTripletLoss(nn.Module):
+
+    def __init__(self, margin=0.2):
+        super(MyTripletLoss, self).__init__()
+        self.margin = margin
+
+    def forward(self, anchor, negative, positive):
+
+        distance_negative = F.pairwise_distance(anchor, negative)
+        distance_positive = F.pairwise_distance(anchor, positive)
+
+        loss = torch.clamp(distance_positive - distance_negative + self.margin, min = 0)
+
+        return loss.mean()
+
 if __name__ == '__main__':
 
     embedding_1 = torch.randn(4, 128)
@@ -24,4 +39,11 @@ if __name__ == '__main__':
     labels = torch.tensor([0, 1, 0, 1], dtype = torch.float32)
 
     contrastive = MyContrastiveLoss()
-    print('contrasitive loss : ', contrastive(embedding_1, embedding_2, labels))
+    print('\ncontrasitive loss : ', contrastive(embedding_1, embedding_2, labels))
+
+    anchor = torch.randn(4, 128)
+    negative = torch.randn(4, 128)
+    positive = torch.randn(4, 128)
+
+    triplet = MyTripletLoss()
+    print('triplet loss : ', triplet(anchor, negative, positive))
