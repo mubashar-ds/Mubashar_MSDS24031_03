@@ -31,19 +31,19 @@ class MyTripletLoss(nn.Module):
 
         return loss.mean()
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
 
-    embedding_1 = torch.randn(4, 128)
-    embedding_2 = torch.randn(4, 128)
+#     embedding_1 = torch.randn(4, 128)
+#     embedding_2 = torch.randn(4, 128)
 
-    labels = torch.tensor([0, 1, 0, 1], dtype = torch.float32)
+#     labels = torch.tensor([0, 1, 0, 1], dtype = torch.float32)
 
-    contrastive = MyContrastiveLoss()
-    print('\ncontrasitive loss : ', contrastive(embedding_1, embedding_2, labels))
+#     contrastive = MyContrastiveLoss()
+#     print('\ncontrasitive loss : ', contrastive(embedding_1, embedding_2, labels))
 
-    anchor = torch.randn(4, 128)
-    negative = torch.randn(4, 128)
-    positive = torch.randn(4, 128)
+#     anchor = torch.randn(4, 128)
+#     negative = torch.randn(4, 128)
+#     positive = torch.randn(4, 128)
 
-    triplet = MyTripletLoss()
-    print('triplet loss : ', triplet(anchor, negative, positive))
+#     triplet = MyTripletLoss()
+#     print('triplet loss : ', triplet(anchor, negative, positive))
