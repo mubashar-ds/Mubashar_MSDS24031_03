@@ -10,6 +10,10 @@ import argparse
 
 from torch.utils.data import random_split
 
+import torch.nn.functional as F
+
+from torchvision import transforms, datasets
+
 def dataset_splits(dataset):
 
     training_size = int(0.7 * len(dataset))
@@ -18,6 +22,30 @@ def dataset_splits(dataset):
 
     return random_split(dataset, [training_size, validation_size, testing_size])
 
+def batch_hard_negative_mining(embeddings, labels, margin = 0.2):
+    loss = 0.0
+    batch_size = embeddings.size(0)
+
+    for i in range(batch_size):
+        anchor = embeddings[i]
+        label_anchor = labels[i]
+
+        distances = F.pairwise_distance(anchor.unsqueeze(0), embeddings)
+
+        negative_mask = (labels != label_anchor)
+        positive_mask = (labels == label_anchor)
+
+        positive_mask[i] = False
+
+        if positive_mask.sum() == 0 or negative_mask.sum() == 0:
+            continue
+
+        hardest_negative = distances[negative_mask].min()
+        hardest_positive = distances[positive_mask].max()
+
+        loss += torch.clamp(hardest_positive - hardest_negative + margin, min = 0)
+
+    return loss / batch_size
 
 def train(args):
 
@@ -35,6 +63,10 @@ def train(args):
     elif args.mode == 'triplet':
         dataset = MyTripletDataset(args.data_path, transform)
         loss_function = MyTripletLoss()
+
+    elif args.mode == 'hard':
+        from torchvision.datasets import ImageFolder
+        dataset = datasets.ImageFolder(args.data_path, transform)
 
     training_dataset, validation_dataset, testing_dataset = dataset_splits(dataset)
 
@@ -61,6 +93,11 @@ def train(args):
             elif args.mode == 'triplet':
                 anchor, negative, positive = batch
                 loss = loss_function(model(anchor), model(negative), model(positive))
+            
+            elif args.mode == 'hard':
+                images, labels = batch
+                embeddings = model(images)
+                loss = batch_hard_negative_mining(embeddings, labels)
 
             loss.backward()
             optimizer.step()
@@ -88,6 +125,11 @@ def train(args):
                 elif args.mode == 'triplet':
                     anchor, negative, positive = batch
                     loss = loss_function(model(anchor), model(negative), model(positive))
+                
+                elif args.mode == 'hard':
+                    images, labels = batch
+                    embeddings = model(images)
+                    loss = batch_hard_negative_mining(embeddings, labels)
 
                 validation_loss += loss.item()
 
@@ -100,7 +142,7 @@ def train(args):
 
 #     parser = argparse.ArgumentParser()
 #     parser.add_argument('--data_path', type = str, required = True)
-#     parser.add_argument('--mode', type = str, required = True, choices = ['contrastive', 'triplet'])
+#     parser.add_argument('--mode', type = str, required = True, choices = ['contrastive', 'triplet', 'hard'])
 #     parser.add_argument('--epochs', type = int, default = 5)
 
 #     args = parser.parse_args()
