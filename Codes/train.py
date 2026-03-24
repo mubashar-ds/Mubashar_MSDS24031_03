@@ -14,6 +14,10 @@ import torch.nn.functional as F
 
 from torchvision import transforms, datasets
 
+import os
+
+import matplotlib.pyplot as plt
+
 def dataset_splits(dataset):
 
     training_size = int(0.7 * len(dataset))
@@ -48,6 +52,12 @@ def batch_hard_negative_mining(embeddings, labels, margin = 0.2):
     return loss / batch_size
 
 def train(args):
+
+    os.makedirs('Graphs', exist_ok = True)
+
+    os.makedirs('Saved_Models', exist_ok = True)
+
+    os.makedirs('Training_Logs', exist_ok = True)
 
     device = 'cpu'
 
@@ -138,12 +148,38 @@ def train(args):
 
         print(f'epoch {epoch+1}/{args.epochs}, validation loss: {averageg_validation_loss}')
 
+        # model checkpoints saving...
+
+        torch.save(model.state_dict(), f'Saved_Models/{args.mode}_epoch{epoch+1}.pth')
+
+        # training logs..
+
+        with open(f'Training_Logs/{args.mode}_log.txt', 'a') as f:
+            f.write(f'{epoch+1},{average_training_loss},{averageg_validation_loss}\n')
+
+    plt.plot(training_losses, label = 'Training')
+    plt.plot(validation_losses, label='Validation')
+
+    plt.legend()
+
+    plt.xlabel('Epoch')
+    plt.ylabel('Loss')
+
+    plt.title(args.mode)
+
+    plt.savefig(f'Graphs/{args.mode}_loss.png')
+
+    plt.close()
+
 # if __name__ == '__main__':
 
 #     parser = argparse.ArgumentParser()
+
 #     parser.add_argument('--data_path', type = str, required = True)
-#     parser.add_argument('--mode', type = str, required = True, choices = ['contrastive', 'triplet', 'hard'])
+#     parser.add_argument('--mode', type = str, required = True, choices = ['Contrastive', 'Triplet', 'Hard'])
+
 #     parser.add_argument('--epochs', type = int, default = 5)
 
 #     args = parser.parse_args()
+
 #     train(args)
