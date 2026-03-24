@@ -76,6 +76,20 @@ class MyTripletDataset(Dataset):
 
         return anchor, negative, positive
 
+import torch
+from torch.utils.data import random_split
+
+def dataset_splits(dataset):
+    
+    generator = torch.Generator().manual_seed(42)
+
+    training_size = int(0.7 * len(dataset))
+    validation_size = int(0.15 * len(dataset))
+
+    testing_size = len(dataset) - training_size - validation_size
+
+    return random_split(dataset,[training_size, validation_size, testing_size], generator = generator)
+
 # if __name__ == '__main__':
 #     from torchvision import transforms
 
