@@ -3,7 +3,7 @@ from torchvision import transforms
 from torch.utils.data import DataLoader
 
 from model import MyEmbeddingNetwork
-from dataset import MyContrastiveDataset, MyTripletDataset
+from dataset import MyContrastiveDataset, MyTripletDataset, dataset_splits
 from loss import MyContrastiveLoss, MyTripletLoss
 
 import argparse
@@ -17,14 +17,6 @@ from torchvision import transforms, datasets
 import os
 
 import matplotlib.pyplot as plt
-
-def dataset_splits(dataset):
-
-    training_size = int(0.7 * len(dataset))
-    validation_size = int(0.15 * len(dataset))
-    testing_size = len(dataset) - training_size - validation_size
-
-    return random_split(dataset, [training_size, validation_size, testing_size])
 
 def batch_hard_negative_mining(embeddings, labels, margin = 0.2):
     loss = 0.0
