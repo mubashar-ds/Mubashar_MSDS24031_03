@@ -57,7 +57,7 @@ def train(args):
     transform = transforms.Compose([transforms.Resize((128, 128)), transforms.ToTensor()])
 
     model = MyEmbeddingNetwork(backbone_freeze = True).to(device)
-    optimizer = torch.optim.Adam(model.parameters(), lr = 1e-3)
+    optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr = 1e-3)
 
     base_dataset = datasets.ImageFolder(args.data_path, transform)
 
