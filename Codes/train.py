@@ -139,7 +139,7 @@ def train(args):
         if average_validation_loss < best_validation_loss:
             best_validation_loss = average_validation_loss
 
-            torch.save(model.state_dict(), f'Saved_Models/{args.mode}_best.pth')
+            torch.save(model.state_dict(), f'../Saved_Models/{args.mode}_best.pth')
             print('best model saved...')
 
         # model checkpoints saving...
