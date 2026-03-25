@@ -54,9 +54,9 @@ def train(args):
 
     device = 'cpu'
 
-    transform = transforms.Compose([transforms.Resize((224, 224)), transforms.ToTensor()])
+    transform = transforms.Compose([transforms.Resize((128, 128)), transforms.ToTensor()])
 
-    model = MyEmbeddingNetwork().to(device)
+    model = MyEmbeddingNetwork(backbone_freeze = True).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr = 1e-3)
 
     base_dataset = datasets.ImageFolder(args.data_path, transform)
