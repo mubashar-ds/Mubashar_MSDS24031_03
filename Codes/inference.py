@@ -46,11 +46,19 @@ if __name__ == '__main__':
 
     model = loading_model(args.model_path)
 
+    embeddings = []
+
     for path in args.image_paths:
 
         embedding = getting_embedding(model, path)
 
         print(f'\nImage: {path}')
         print('embedding shape : ', embedding.shape)
+        embeddings.append(embedding)
 
         print(embedding)
+    
+    if len(embeddings) >= 2:
+
+        cos_similarity = F.cosine_similarity(embeddings[0], embeddings[1])
+        print(f'cosine similarity : {cos_similarity.item():.3f}')
