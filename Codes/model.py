@@ -15,9 +15,11 @@ class MyEmbeddingNetwork(nn.Module):
         self.backbone.fc = nn.Identity()
 
         # freezing backbone as using cpu...
+        
         if backbone_freeze:
             for layer_parameter in self.backbone.parameters():
                 layer_parameter.requires_grad = False
+            print('backbone is successfully frozen...')
 
         self.embedding = nn.Linear(input_size_fc_layer, embedding_vector)
 
