@@ -11,6 +11,9 @@ from model import MyEmbeddingNetwork
 
 import argparse
 
+from torch.utils.data import Subset
+import random
+
 def saving_embeddings(data_path, model_path, save_prefix, split):
 
     os.makedirs('../Embeddings' , exist_ok = True)
@@ -19,7 +22,11 @@ def saving_embeddings(data_path, model_path, save_prefix, split):
 
     transform = transforms.Compose([transforms.Resize((224, 224)), transforms.ToTensor()])
 
-    base_dataset = datasets.ImageFolder(data_path, transform)
+    base_dataset = datasets.ImageFolder(args.data_path, transform)
+
+    subset_size = 3000
+    indices = random.sample(range(len(base_dataset)), subset_size)
+    base_dataset = Subset(base_dataset, indices)
 
     training_ds, validation_ds, testing_ds = dataset_splits(base_dataset)
 
