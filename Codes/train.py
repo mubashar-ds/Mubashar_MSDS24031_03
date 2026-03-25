@@ -179,7 +179,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--data_path', type = str, required = True)
-    parser.add_argument('--mode', type = str, required = True, modes = ['contrastive', 'triplet', 'hard'])
+    parser.add_argument('--mode', type = str, required = True, choices = ['contrastive', 'triplet', 'hard'])
     parser.add_argument('--epochs', type = int, default = 5)
 
     args = parser.parse_args()
