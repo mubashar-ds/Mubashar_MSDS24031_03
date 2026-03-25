@@ -31,6 +31,36 @@ class MyTripletLoss(nn.Module):
 
         return loss.mean()
 
+def batch_hard_negative_mining(embeddings, labels, margin = 0.2):
+
+    losses = []
+    batch_size = embeddings.size(0)
+
+    for i in range(batch_size):
+        anchor = embeddings[i]
+        label_anchor = labels[i]
+
+        distances = F.pairwise_distance(anchor.unsqueeze(0), embeddings)
+
+        negative_mask = (labels != label_anchor)
+        positive_mask = (labels == label_anchor)
+
+        positive_mask[i] = False
+
+        if positive_mask.sum() == 0 or negative_mask.sum() == 0:
+            continue
+
+        hardest_negative = distances[negative_mask].min()
+        hardest_positive = distances[positive_mask].max()
+
+        loss += torch.clamp(hardest_positive - hardest_negative + margin, min = 0)
+        losses.append(loss)
+
+    if len(losses) == 0:
+        return torch.tensor(0.0, requires_grad = True)
+
+    return torch.stack(losses).mean()
+
 # if __name__ == '__main__':
 
 #     embedding_1 = torch.randn(4, 128)

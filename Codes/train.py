@@ -4,7 +4,7 @@ from torch.utils.data import DataLoader
 
 from model import MyEmbeddingNetwork
 from dataset import MyContrastiveDataset, MyTripletDataset, dataset_splits
-from loss import MyContrastiveLoss, MyTripletLoss
+from loss import MyContrastiveLoss, MyTripletLoss, batch_hard_negative_mining
 
 import argparse
 
@@ -20,32 +20,6 @@ import matplotlib.pyplot as plt
 
 from torch.utils.data import Subset
 import random
-
-def batch_hard_negative_mining(embeddings, labels, margin = 0.2):
-
-    loss = 0.0
-    batch_size = embeddings.size(0)
-
-    for i in range(batch_size):
-        anchor = embeddings[i]
-        label_anchor = labels[i]
-
-        distances = F.pairwise_distance(anchor.unsqueeze(0), embeddings)
-
-        negative_mask = (labels != label_anchor)
-        positive_mask = (labels == label_anchor)
-
-        positive_mask[i] = False
-
-        if positive_mask.sum() == 0 or negative_mask.sum() == 0:
-            continue
-
-        hardest_negative = distances[negative_mask].min()
-        hardest_positive = distances[positive_mask].max()
-
-        loss += torch.clamp(hardest_positive - hardest_negative + margin, min = 0)
-
-    return loss / batch_size
 
 def train(args):
 
