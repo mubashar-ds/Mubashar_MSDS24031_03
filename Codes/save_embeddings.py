@@ -9,6 +9,8 @@ from dataset import dataset_splits
 
 from model import MyEmbeddingNetwork
 
+import argparse
+
 def saving_embeddings(data_path, model_path, save_prefix, split = 'test'):
 
     os.makedirs('../Embeddings' , exist_ok = True)
@@ -17,16 +19,18 @@ def saving_embeddings(data_path, model_path, save_prefix, split = 'test'):
 
     transform = transforms.Compose([transforms.Resize((224, 224)), transforms.ToTensor()])
 
-    dataset = datasets.ImageFolder(data_path, transform)
-    
-    training_dataset, validation_dataset, testing_dataset = dataset_splits(dataset)
+    base_dataset = datasets.ImageFolder(data_path, transform)
+
+    training_ds, validation_ds, testing_ds = dataset_splits(base_dataset)
 
     if split == 'train':
-        selected_dataset = training_dataset
+        selected_dataset = training_ds
+
     elif split == 'validation':
-        selected_dataset = validation_dataset
+        selected_dataset = validation_ds
+
     else:
-        selected_dataset = testing_dataset
+        selected_dataset = testing_ds
 
     data_loader = DataLoader(selected_dataset, batch_size = 8)
  
@@ -62,3 +66,15 @@ def saving_embeddings(data_path, model_path, save_prefix, split = 'test'):
     np.save(f'embeddings/{save_prefix}_{split}_labels.npy', the_labels)
     np.save(f'embeddings/{save_prefix}_{split}_embeddings.npy', the_embeddings)
 
+if __name__ == '__main__':
+
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument('--data_path', type = str, required = True)
+    parser.add_argument('--model_path', type = str, required= True)
+    parser.add_argument('--mode', type = str, required =True, choices = ['contrastive', 'triplet', 'hard'])
+
+    args = parser.parse_args()
+
+    for split in ['train', 'val', 'test']:
+        saving_embeddings(args.data_path, args.model_path, args.mode, split)
