@@ -7,13 +7,14 @@ from torch.utils.data import Dataset
 import random
 from PIL import Image
 class MyContrastiveDataset(Dataset):
-    def __init__(self, root_directory, transform = None):
-        self.dataset = datasets.ImageFolder(root = root_directory, transform= transform)
-        self.transform = transform
 
-        # maping class to indexes...
+    def __init__(self, dataset):
+        self.dataset = dataset
+
+        # maping class to indexes ..
+
         self.class_to_indexes = {}
-        for indx, (_, label) in enumerate(self.dataset.samples):
+        for indx, (_, label) in enumerate(self.dataset):
             if label not in self.class_to_indexes:
                 self.class_to_indexes[label] = []
             self.class_to_indexes[label].append(indx)
@@ -22,6 +23,7 @@ class MyContrastiveDataset(Dataset):
         image_1, label_1 = self.dataset[index]
 
         # negative pair ..
+
         if random.random() > 0.5:
             label_2 = label_1
             while label_2 == label_1:
@@ -31,10 +33,14 @@ class MyContrastiveDataset(Dataset):
             label = 0
             
         # positive pair ...
+
         else:
             index_2 = index
-            while index_2 == index:
-                index_2 = random.choice(self.class_to_indexes[label_1])
+
+            if len(self.class_to_indexes[label_1]) > 1:
+                while index_2 == index:
+                    index_2 = random.choice(self.class_to_indexes[label_1])
+
             image_2, _ = self.dataset[index_2]
             label = 1
 
@@ -44,13 +50,15 @@ class MyContrastiveDataset(Dataset):
         return len(self.dataset)
     
 class MyTripletDataset(Dataset):
-    def __init__(self, root_directory, transform = None):
-        self.dataset = datasets.ImageFolder(root = root_directory, transform = transform)
-        self.transform = transform
 
-        # maping classes to indexes...
+    def __init__(self, dataset):
+        self.dataset = dataset
+
+        # mapping classes to indexes ...
+
         self.class_to_indexes = {}
-        for indx, (_, label) in enumerate(self.dataset.samples):
+
+        for indx, (_, label) in enumerate(self.dataset):
             if label not in self.class_to_indexes:
                 self.class_to_indexes[label] = []
             self.class_to_indexes[label].append(indx)
@@ -58,23 +66,29 @@ class MyTripletDataset(Dataset):
         self.classes = list(self.class_to_indexes.keys())
 
     def __getitem__(self, index):
+
         anchor, label_anchor = self.dataset[index]
 
         # negative... differnet classs..
+
         negative_label = label_anchor
+
         while negative_label == label_anchor:
             negative_label = random.choice(self.classes)
 
         negative_index = random.choice(self.class_to_indexes[negative_label])
         negative, _ = self.dataset[negative_index]
 
-         # positive.. same class and different image...
-        positive_index = index
-        while positive_index == index:
-            positive_index = random.choice(self.class_to_indexes[label_anchor])
-        positive, _ = self.dataset[positive_index]
+        # positive.. same class and different image...
 
-        return anchor, negative, positive
+        positive_index = index
+
+        if len(self.class_to_indexes[label_anchor]) > 1:
+            while positive_index == index:
+                positive_index = random.choice(self.class_to_indexes[label_anchor])
+
+        positive, _ = self.dataset[positive_index]
+        return anchor, positive, negative
 
 import torch
 from torch.utils.data import random_split
@@ -91,10 +105,12 @@ def dataset_splits(dataset):
     return random_split(dataset,[training_size, validation_size, testing_size], generator = generator)
 
 # if __name__ == '__main__':
+
+#     data_path = '../Dataset/caltech-101'
+
 #     from torchvision import transforms
 
 #     transform = transforms.Compose([transforms.Resize((224, 224)), transforms.ToTensor()])
-#     data_path = './Dataset/caltech-101'
 
 #     print('testinig my contrastive dataset ...')
 
