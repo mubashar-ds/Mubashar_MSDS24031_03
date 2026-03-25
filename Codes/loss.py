@@ -22,7 +22,7 @@ class MyTripletLoss(nn.Module):
         super(MyTripletLoss, self).__init__()
         self.margin = margin
 
-    def forward(self, anchor, negative, positive):
+    def forward(self, anchor, positive, negative):
 
         distance_negative = F.pairwise_distance(anchor, negative)
         distance_positive = F.pairwise_distance(anchor, positive)
@@ -46,4 +46,4 @@ class MyTripletLoss(nn.Module):
 #     positive = torch.randn(4, 128)
 
 #     triplet = MyTripletLoss()
-#     print('triplet loss : ', triplet(anchor, negative, positive))
+#     print('triplet loss : ', triplet(anchor, positive, negative))
