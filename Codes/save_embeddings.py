@@ -71,9 +71,9 @@ def saving_embeddings(data_path, model_path, save_prefix, split):
     the_labels = torch.cat(the_labels).numpy()
     the_embeddings = torch.cat(the_embeddings).numpy()
 
-    np.save(f'embeddings/{save_prefix}_{split}_images.npy', the_images)
-    np.save(f'embeddings/{save_prefix}_{split}_labels.npy', the_labels)
-    np.save(f'embeddings/{save_prefix}_{split}_embeddings.npy', the_embeddings)
+    np.save(f'Embeddings/{save_prefix}_{split}_images.npy', the_images)
+    np.save(f'Embeddings/{save_prefix}_{split}_labels.npy', the_labels)
+    np.save(f'Embeddings/{save_prefix}_{split}_embeddings.npy', the_embeddings)
 
 if __name__ == '__main__':
 
@@ -85,5 +85,5 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    for split in ['train', 'val', 'test']:
+    for split in ['train', 'validation', 'test']:
         saving_embeddings(args.data_path, args.model_path, args.mode, split)
