@@ -53,7 +53,8 @@ def batch_hard_negative_mining(embeddings, labels, margin = 0.2):
         hardest_negative = distances[negative_mask].min()
         hardest_positive = distances[positive_mask].max()
 
-        loss += torch.clamp(hardest_positive - hardest_negative + margin, min = 0)
+        loss = torch.clamp(hardest_positive - hardest_negative + margin, min = 0)
+
         losses.append(loss)
 
     if len(losses) == 0:
