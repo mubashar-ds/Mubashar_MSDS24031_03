@@ -90,7 +90,9 @@ class MyTripletDataset(Dataset):
         positive, _ = self.dataset[positive_index]
         return anchor, positive, negative
 
-import torch
+    def __len__(self):
+        return len(self.dataset)
+
 from torch.utils.data import random_split
 
 def dataset_splits(dataset):
