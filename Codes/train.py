@@ -18,6 +18,9 @@ import os
 
 import matplotlib.pyplot as plt
 
+from torch.utils.data import Subset
+import random
+
 def batch_hard_negative_mining(embeddings, labels, margin = 0.2):
 
     loss = 0.0
@@ -60,6 +63,10 @@ def train(args):
     optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr = 1e-3)
 
     base_dataset = datasets.ImageFolder(args.data_path, transform)
+
+    subset_size = 3000
+    indices = random.sample(range(len(base_dataset)), subset_size)
+    base_dataset = Subset(base_dataset, indices)
 
     training_ds, validation_ds, testing_ds = dataset_splits(base_dataset)
 
