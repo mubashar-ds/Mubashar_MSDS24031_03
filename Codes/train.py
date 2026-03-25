@@ -59,19 +59,26 @@ def train(args):
     model = MyEmbeddingNetwork().to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr = 1e-3)
 
+    base_dataset = datasets.ImageFolder(args.data_path, transform)
+
+    training_ds, validation_ds, testing_ds = dataset_splits(base_dataset)
+
     if args.mode == 'contrastive':
-        dataset = MyContrastiveDataset(args.data_path, transform)
+
+        training_dataset = MyContrastiveDataset(training_ds)
+        validation_dataset = MyContrastiveDataset(validation_ds)
         loss_function = MyContrastiveLoss()
 
     elif args.mode == 'triplet':
-        dataset = MyTripletDataset(args.data_path, transform)
+
+        training_dataset = MyTripletDataset(training_ds)
+        validation_dataset = MyTripletDataset(validation_ds)
         loss_function = MyTripletLoss()
 
     elif args.mode == 'hard':
-        from torchvision.datasets import ImageFolder
-        dataset = datasets.ImageFolder(args.data_path, transform)
 
-    training_dataset, validation_dataset, testing_dataset = dataset_splits(dataset)
+        training_dataset = training_ds
+        validation_dataset = validation_ds
 
     training_loader = DataLoader(training_dataset, batch_size = 8, shuffle = True)
     validation_loader = DataLoader(validation_dataset, batch_size = 8)
@@ -122,14 +129,17 @@ def train(args):
             for batch in validation_loader:
 
                 if args.mode == 'contrastive':
+
                     image_1, image_2, label = batch
                     loss = loss_function(model(image_1), model(image_2), label)
 
                 elif args.mode == 'triplet':
+
                     anchor, negative, positive = batch
                     loss = loss_function(model(anchor), model(negative), model(positive))
                 
                 elif args.mode == 'hard':
+                    
                     images, labels = batch
                     embeddings = model(images)
                     loss = batch_hard_negative_mining(embeddings, labels)
