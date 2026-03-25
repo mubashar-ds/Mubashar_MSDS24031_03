@@ -19,6 +19,7 @@ import os
 import matplotlib.pyplot as plt
 
 def batch_hard_negative_mining(embeddings, labels, margin = 0.2):
+
     loss = 0.0
     batch_size = embeddings.size(0)
 
@@ -45,11 +46,11 @@ def batch_hard_negative_mining(embeddings, labels, margin = 0.2):
 
 def train(args):
 
-    os.makedirs('Graphs', exist_ok = True)
+    os.makedirs('../Graphs', exist_ok = True)
 
-    os.makedirs('Saved_Models', exist_ok = True)
+    os.makedirs('../Saved_Models', exist_ok = True)
 
-    os.makedirs('Training_Logs', exist_ok = True)
+    os.makedirs('../Training_Logs', exist_ok = True)
 
     device = 'cpu'
 
@@ -135,19 +136,19 @@ def train(args):
 
                 validation_loss += loss.item()
 
-        averageg_validation_loss = validation_loss / len(validation_loader)
-        validation_losses.append(averageg_validation_loss)
+        average_validation_loss = validation_loss / len(validation_loader)
+        validation_losses.append(average_validation_loss)
 
-        print(f'epoch {epoch+1}/{args.epochs}, validation loss: {averageg_validation_loss}')
+        print(f'epoch {epoch+1}/{args.epochs}, validation loss: {average_validation_loss}')
 
         # model checkpoints saving...
 
-        torch.save(model.state_dict(), f'Saved_Models/{args.mode}_epoch{epoch+1}.pth')
+        torch.save(model.state_dict(), f'../Saved_Models/{args.mode}_epoch{epoch+1}.pth')
 
         # training logs..
 
-        with open(f'Training_Logs/{args.mode}_log.txt', 'a') as f:
-            f.write(f'{epoch+1},{average_training_loss},{averageg_validation_loss}\n')
+        with open(f'../Training_Logs/{args.mode}_log.txt', 'a') as f:
+            f.write(f'{epoch+1},{average_training_loss},{average_validation_loss}\n')
 
     plt.plot(training_losses, label = 'Training')
     plt.plot(validation_losses, label='Validation')
@@ -159,7 +160,7 @@ def train(args):
 
     plt.title(args.mode)
 
-    plt.savefig(f'Graphs/{args.mode}_loss.png')
+    plt.savefig(f'../Graphs/{args.mode}_loss.png')
 
     plt.close()
 
@@ -168,7 +169,7 @@ def train(args):
 #     parser = argparse.ArgumentParser()
 
 #     parser.add_argument('--data_path', type = str, required = True)
-#     parser.add_argument('--mode', type = str, required = True, choices = ['Contrastive', 'Triplet', 'Hard'])
+#     parser.add_argument('--mode', type = str, required = True, choices = ['contrastive', 'triplet', 'hard'])
 
 #     parser.add_argument('--epochs', type = int, default = 5)
 
