@@ -69,6 +69,8 @@ def train(args):
 
     # training loop...
 
+    best_validation_loss = float('inf')
+
     for epoch in range(args.epochs):
 
         model.train()
@@ -130,7 +132,15 @@ def train(args):
         average_validation_loss = validation_loss / len(validation_loader)
         validation_losses.append(average_validation_loss)
 
-        print(f'epoch {epoch+1}/{args.epochs}, validation loss: {average_validation_loss}')
+        print(f'epoch {epoch+1}, validation loss: {average_validation_loss}')
+
+        # best model saving...
+
+        if average_validation_loss < best_validation_loss:
+            best_validation_loss = average_validation_loss
+
+            torch.save(model.state_dict(), f'Saved_Models/{args.mode}_best.pth')
+            print('best model saved...')
 
         # model checkpoints saving...
 
