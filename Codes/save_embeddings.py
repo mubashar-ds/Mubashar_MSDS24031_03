@@ -11,7 +11,7 @@ from model import MyEmbeddingNetwork
 
 import argparse
 
-def saving_embeddings(data_path, model_path, save_prefix, split = 'test'):
+def saving_embeddings(data_path, model_path, save_prefix, split):
 
     os.makedirs('../Embeddings' , exist_ok = True)
 
@@ -50,6 +50,8 @@ def saving_embeddings(data_path, model_path, save_prefix, split = 'test'):
 
             embedding = model(images)
 
+            # for making it memory efficient..
+            
             images_numpy = images.permute(0, 2, 3, 1).numpy()
             images_numpy = (images_numpy * 255).astype(np.uint8)
             the_images.append(images_numpy)
