@@ -63,7 +63,7 @@ def plotting_tsne(embeddings, labels, title):
 
 # visualizing retreival...
 
-def showing_retrieval(query_index, embeddings, images, labels, class_names, k = 5):
+def showing_retrieval(query_index, embeddings, images, labels, class_names, mode, k = 5):
 
     index = query_index
 
@@ -91,7 +91,7 @@ def showing_retrieval(query_index, embeddings, images, labels, class_names, k = 
 
         plt.axis('off')
 
-    plt.savefig(f'../Graphs/retrieval_{index}.png')
+    plt.savefig(f'../Graphs/{mode}_retrieval_{index}.png')
     plt.close()
 
 # runnign evaluation...
@@ -117,8 +117,8 @@ def evaluating(mode, data_path):
 
     indexes = np.random.choice(len(embeddings), 10, replace = False)
 
-    for i in range(5):   
-        showing_retrieval(i, embeddings, images, labels, class_names, k = 5)
+    for i in indexes:   
+        showing_retrieval(i, embeddings, images, labels, class_names, mode, k = 5)
 
     print('\nlabels shape :', labels.shape)
     print('sample labels :', labels[:5])
