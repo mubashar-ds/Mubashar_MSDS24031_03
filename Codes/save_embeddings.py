@@ -56,20 +56,19 @@ def saving_embeddings(data_path, model_path, save_prefix, split):
         for images, labels in data_loader:
 
             embedding = model(images)
+            the_embeddings.append(embedding.cpu().numpy())
+
+            for l in labels:
+                the_labels.append(int(l.item()))
 
             # for making it memory efficient..
-            
             images_numpy = images.permute(0, 2, 3, 1).numpy()
             images_numpy = (images_numpy * 255).astype(np.uint8)
             the_images.append(images_numpy)
-
-            the_labels.append(labels)
-
-            the_embeddings.append(embedding)
     
     the_images = np.concatenate(the_images)
-    the_labels = torch.cat(the_labels).numpy()
-    the_embeddings = torch.cat(the_embeddings).numpy()
+    the_labels = np.array(the_labels)
+    the_embeddings = np.concatenate(the_embeddings)
 
     np.save(f'../Embeddings/{save_prefix}_{split}_images.npy', the_images)
     np.save(f'../Embeddings/{save_prefix}_{split}_labels.npy', the_labels)
