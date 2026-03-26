@@ -23,9 +23,10 @@ pip install -r requirements.txt
 ## Training
 
 ```
-python Codes/train.py --data_path ../Dataset/caltech-101 --mode contrastive --epochs 5
-python Codes/train.py --data_path ../Dataset/caltech-101 --mode triplet --epochs 5
-python Codes/train.py --data_path ../Dataset/caltech-101 --mode hard --epochs 5
+cd Codes
+python train.py --data_path ../Dataset/caltech-101 --mode contrastive --epochs 5
+python train.py --data_path ../Dataset/caltech-101 --mode triplet --epochs 5
+python train.py --data_path ../Dataset/caltech-101 --mode hard --epochs 5
 ```
 
 ---
@@ -33,9 +34,10 @@ python Codes/train.py --data_path ../Dataset/caltech-101 --mode hard --epochs 5
 ## Save Embeddings
 
 ```
-python Codes/save_embeddings.py --data_path ../Dataset/caltech-101 --model_path ../Saved_Models/contrastive_best.pth --mode contrastive
-python Codes/save_embeddings.py --data_path ../Dataset/caltech-101 --model_path ../Saved_Models/triplet_best.pth --mode triplet
-python Codes/save_embeddings.py --data_path ../Dataset/caltech-101 --model_path ../Saved_Models/hard_best.pth --mode hard
+cd Codes
+python save_embeddings.py --data_path ../Dataset/caltech-101 --model_path ../Saved_Models/contrastive_best.pth --mode contrastive
+python save_embeddings.py --data_path ../Dataset/caltech-101 --model_path ../Saved_Models/triplet_best.pth --mode triplet
+python save_embeddings.py --data_path ../Dataset/caltech-101 --model_path ../Saved_Models/hard_best.pth --mode hard
 ```
 
 ---
@@ -43,9 +45,10 @@ python Codes/save_embeddings.py --data_path ../Dataset/caltech-101 --model_path 
 ## Retrieval Evaluation
 
 ```
-python Codes/retrieval.py --data_path ../Dataset/caltech-101 --mode contrastive
-python Codes/retrieval.py --data_path ../Dataset/caltech-101 --mode triplet
-python Codes/retrieval.py --data_path ../Dataset/caltech-101 --mode hard
+cd Codes
+python retrieval.py --data_path ../Dataset/caltech-101 --mode contrastive
+python retrieval.py --data_path ../Dataset/caltech-101 --mode triplet
+python retrieval.py --data_path ../Dataset/caltech-101 --mode hard
 ```
 
 Outputs:
@@ -59,6 +62,7 @@ Outputs:
 ## Inference
 
 ```
-python Codes/inference.py --model_path ../Saved_Models/contrastive_best.pth --image_path path_to_image.jpg
+cd Codes
+python inference.py --model_path ../Saved_Models/contrastive_best.pth --image_path 101/airplanes/image_0001.jpg
 ```
 ---
