@@ -18,7 +18,7 @@ def loading_model(model_path):
 
 def preprocessing_image(image_path):
 
-    transform = transforms.Compose([transforms.Resize((224, 224)), transforms.ToTensor()])
+    transform = transforms.Compose([transforms.Resize((128, 128)), transforms.ToTensor()])
 
     image = Image.open(image_path).convert('RGB')
 
@@ -61,4 +61,4 @@ if __name__ == '__main__':
     if len(embeddings) >= 2:
 
         cos_similarity = F.cosine_similarity(embeddings[0], embeddings[1])
-        print(f'cosine similarity : {cos_similarity.item():.3f}')
+        print(f'\ncosine similarity : {cos_similarity.item():.3f}')
