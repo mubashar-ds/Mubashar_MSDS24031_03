@@ -19,7 +19,10 @@ import os
 import matplotlib.pyplot as plt
 
 from torch.utils.data import Subset
+
 import random
+
+import numpy as np
 
 def train(args):
 
@@ -36,13 +39,12 @@ def train(args):
     model = MyEmbeddingNetwork(backbone_freeze = True).to(device)
     optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr = 1e-3)
 
-    base_dataset = datasets.ImageFolder(args.data_path, transform)
+    full_dataset = datasets.ImageFolder(args.data_path, transform)
 
-    subset_size = 3000
-    indices = random.sample(range(len(base_dataset)), subset_size)
-    base_dataset = Subset(base_dataset, indices)
+    data_indices = np.load('../Dataset/subset-caltech-101.npy')   
+    subset_dataset = Subset(full_dataset, data_indices)
 
-    training_ds, validation_ds, testing_ds = dataset_splits(base_dataset)
+    training_ds, validation_ds, testing_ds = dataset_splits(subset_dataset)
 
     if args.mode == 'contrastive':
 
