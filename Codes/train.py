@@ -23,7 +23,7 @@ import random
 
 def train(args):
 
-    os.makedirs('../Graphs', exist_ok = True)
+    os.makedirs('../Graphs/Loss_Curves', exist_ok = True)
 
     os.makedirs('../Saved_Models', exist_ok = True)
 
@@ -161,7 +161,7 @@ def train(args):
 
     plt.title(args.mode)
 
-    plt.savefig(f'../Graphs/{args.mode}_loss.png')
+    plt.savefig(f'../Graphs/Loss_Curves/{args.mode}_loss.png')
 
     plt.close()
 
