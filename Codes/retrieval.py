@@ -46,19 +46,22 @@ def recall_at_k(embeddings, labels, k = 1):
 
 # t sne..
 
-def plotting_tsne(embeddings, labels, title):
+def plotting_tsne(embeddings, labels, mode):
 
     t_sne = TSNE(n_components = 2, perplexity = 30)
 
     embedding_2d = t_sne.fit_transform(embeddings)
 
-    os.makedirs('../Graphs', exist_ok = True)
+    os.makedirs('../Graphs/Retrieved_Results/', exist_ok = True)
+    os.makedirs('../Graphs/TSNE/', exist_ok = True)
+
 
     plt.figure()
     plt.scatter(embedding_2d[:, 0], embedding_2d[:, 1], c = labels, cmap = 'tab20', s = 5)
-    plt.title(title)
+    plt.title(mode)
 
-    plt.savefig(f'../Graphs/{title}_tsne.png')
+    plt.savefig(f'../Graphs/TSNE/{mode}_tsne.png')
+
     plt.close()
 
 # visualizing retreival...
@@ -91,7 +94,8 @@ def showing_retrieval(query_index, embeddings, images, labels, class_names, mode
 
         plt.axis('off')
 
-    plt.savefig(f'../Graphs/{mode}_retrieval_{index}.png')
+    plt.savefig(f'../Graphs/Retrieved_Results/{mode}_retrieval_{index}.png')
+
     plt.close()
 
 # runnign evaluation...
