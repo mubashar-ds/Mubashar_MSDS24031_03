@@ -30,14 +30,18 @@ pip install -r requirements.txt
 
 ---
 
-3. Training
+3. Subset Dataset Indices Making
 
-Navigate to Codes directory:
-   
+Run this command to make a consistent subset to use throughout project:
+
 cd Codes
+python data_subset.py --data_path ../Dataset/caltech-101
+
+4. Training
 
 Run training for each mode using:
 
+cd Codes
 python train.py --data_path ../Dataset/caltech-101 --mode contrastive --epochs 5
 python train.py --data_path ../Dataset/caltech-101 --mode triplet --epochs 5
 python train.py --data_path ../Dataset/caltech-101 --mode hard --epochs 5
@@ -47,14 +51,11 @@ Saved_Models/
 
 ---
 
-4. Save Embeddings
-
-Navigate to Codes directory:
-   
-cd Codes
+5. Save Embeddings
 
 Generate embeddings for train/validation/test using:
 
+cd Codes
 python save_embeddings.py --data_path ../Dataset/caltech-101 --model_path ../Saved_Models/contrastive_best.pth --mode contrastive
 python save_embeddings.py --data_path ../Dataset/caltech-101 --model_path ../Saved_Models/triplet_best.pth --mode triplet
 python save_embeddings.py --data_path ../Dataset/caltech-101 --model_path ../Saved_Models/hard_best.pth --mode hard
@@ -64,14 +65,11 @@ Embeddings/
 
 ---
 
-5. Retrieval Evaluation
-
-Navigate to Codes directory:
-   
-cd Codes
+6. Retrieval Evaluation
 
 Compute Recall_at_K & visualize results using:
 
+cd Codes
 python retrieval.py --data_path ../Dataset/caltech-101 --mode contrastive
 python retrieval.py --data_path ../Dataset/caltech-101 --mode triplet
 python retrieval.py --data_path ../Dataset/caltech-101 --mode hard
@@ -83,14 +81,22 @@ Outputs:
 
 ---
 
-6. Inference 
-
-Navigate to Codes directory:
-   
-cd Codes
+7. Inference 
 
 Generate embedding for new images:
 
-python inference.py --model_path ../Saved_Models/contrastive_best.pth --image_path 101/airplanes/image_0001.jpg
+cd Codes
+python inference.py --model_path ../Saved_Models/contrastive_best.pth --image_path ../Dataset/caltech-101/airplanes/image_0001.jpg
+python inference.py --model_path ../Saved_Models/triplet_best.pth --image_path ../Dataset/caltech-101/airplanes/image_0001.jpg
+python inference.py --model_path ../Saved_Models/hard_best.pth --image_path ../Dataset/caltech-101/airplanes/image_0001.jpg
+
+For checking embeddings of two different images, along with cosine score:
+
+cd Codes
+python inference.py --model_path ../Saved_Models/contrastive_best.pth --image_path ../Dataset/caltech-101/airplanes/image_0001.jpg ../Dataset/caltech-101/airplanes/image_0002.jpg 
+python inference.py --model_path ../Saved_Models/triplet_best.pth --image_path ../Dataset/caltech-101/airplanes/image_0001.jpg ../Dataset/caltech-101/airplanes/image_0002.jpg 
+python inference.py --model_path ../Saved_Models/hard_best.pth --image_path ../Dataset/caltech-101/airplanes/image_0001.jpg ../Dataset/caltech-101/airplanes/image_0002.jpg 
+
+
 
 ---
