@@ -97,7 +97,7 @@ def train(args):
                 positive = positive.to(device)
                 negative = negative.to(device)
 
-                loss = loss_function(model(anchor), model(negative), model(positive))
+                loss = loss_function(model(anchor), model(positive), model(negative))
             
             elif args.mode == 'hard':
                 images, labels = batch
@@ -134,8 +134,8 @@ def train(args):
 
                 elif args.mode == 'triplet':
 
-                    anchor, negative, positive = batch
-                    loss = loss_function(model(anchor), model(negative), model(positive))
+                    anchor, positive, negative = batch
+                    loss = loss_function(model(anchor), model(positive), model(negative))
                 
                 elif args.mode == 'hard':
                     
