@@ -32,7 +32,7 @@ def train(args):
 
     os.makedirs('../Training_Logs', exist_ok = True)
 
-    device = 'cpu'
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     transform = transforms.Compose([transforms.Resize((128, 128)), transforms.ToTensor()])
 
@@ -83,14 +83,28 @@ def train(args):
 
             if args.mode == 'contrastive':
                 image_1, image_2, label = batch
+
+                label = label.to(device)
+                image_1 = image_1.to(device)
+                image_2 = image_2.to(device)
+
                 loss = loss_function(model(image_1), model(image_2), label)
 
             elif args.mode == 'triplet':
-                anchor, negative, positive = batch
+                anchor, positive, negative = batch
+
+                anchor =anchor.to(device)
+                positive = positive.to(device)
+                negative = negative.to(device)
+
                 loss = loss_function(model(anchor), model(negative), model(positive))
             
             elif args.mode == 'hard':
                 images, labels = batch
+
+                images = images.to(device)
+                labels= labels.to(device)
+
                 embeddings = model(images)
                 loss = batch_hard_negative_mining(embeddings, labels)
 

@@ -8,9 +8,12 @@ import argparse
 
 from model import MyEmbeddingNetwork
 
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+
 def loading_model(model_path):
 
-    model = MyEmbeddingNetwork()
+    model = MyEmbeddingNetwork().to(device)
     model.load_state_dict(torch.load(model_path))
     model.eval()
     
@@ -27,6 +30,8 @@ def preprocessing_image(image_path):
 def getting_embedding(model, image_path):
 
     image = preprocessing_image(image_path)
+
+    image = image.to(device)
 
     with torch.no_grad():
         embedding = model(image)

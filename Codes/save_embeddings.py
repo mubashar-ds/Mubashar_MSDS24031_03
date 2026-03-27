@@ -21,7 +21,7 @@ def saving_embeddings(data_path, model_path, save_prefix, split):
 
     os.makedirs('../Embeddings' , exist_ok = True)
 
-    device = 'cpu'
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     transform = transforms.Compose([transforms.Resize((128, 128)), transforms.ToTensor()])
 
@@ -43,7 +43,7 @@ def saving_embeddings(data_path, model_path, save_prefix, split):
 
     data_loader = DataLoader(selected_dataset, batch_size = 8)
  
-    model = MyEmbeddingNetwork()
+    model = MyEmbeddingNetwork().to(device)
     
     model.load_state_dict(torch.load(model_path))
 
@@ -56,6 +56,8 @@ def saving_embeddings(data_path, model_path, save_prefix, split):
     with torch.no_grad():
 
         for images, labels in data_loader:
+
+            images= images.to(device)
 
             embedding = model(images)
             the_embeddings.append(embedding.cpu().numpy())
