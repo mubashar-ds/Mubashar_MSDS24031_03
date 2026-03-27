@@ -20,6 +20,15 @@ pip install -r requirements.txt
 
 ---
 
+## Subset Dataset Indices 
+
+Run this command to make a consistent subset to use throughout project:
+
+```
+cd Codes
+python data_subset.py --data_path ../Dataset/caltech-101
+```
+
 ## Training
 
 ```
@@ -61,8 +70,20 @@ Outputs:
 
 ## Inference
 
+Generate embedding for new images:
+
 ```
 cd Codes
-python inference.py --model_path ../Saved_Models/contrastive_best.pth --image_path 101/airplanes/image_0001.jpg
+python inference.py --model_path ../Saved_Models/contrastive_best.pth --image_path ../Dataset/caltech-101/airplanes/image_0001.jpg
+python inference.py --model_path ../Saved_Models/triplet_best.pth --image_path ../Dataset/caltech-101/airplanes/image_0001.jpg
+python inference.py --model_path ../Saved_Models/hard_best.pth --image_path ../Dataset/caltech-101/airplanes/image_0001.jpg
+```
+For checking embeddings of two different images, along with cosine score:
+
+```
+cd Codes
+python inference.py --model_path ../Saved_Models/contrastive_best.pth --image_path ../Dataset/caltech-101/airplanes/image_0001.jpg ../Dataset/caltech-101/airplanes/image_0002.jpg 
+python inference.py --model_path ../Saved_Models/triplet_best.pth --image_path ../Dataset/caltech-101/airplanes/image_0001.jpg ../Dataset/caltech-101/airplanes/image_0002.jpg 
+python inference.py --model_path ../Saved_Models/hard_best.pth --image_path ../Dataset/caltech-101/airplanes/image_0001.jpg ../Dataset/caltech-101/airplanes/image_0002.jpg 
 ```
 ---
